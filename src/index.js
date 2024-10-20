@@ -58,53 +58,87 @@ function App() {
 }
 
 function Header() {
-  //  const style = {
-  //    color: "orange",
-  //    fontSize: "45px",
-  //    textTransform: "uppercase",
-  //  };
-  const style = {};
-
   return (
     <header className="header">
-      <h1 style={style}>Ana's Pizza Delights</h1>
+      <h1
+        style={{
+          color: "orange",
+          fontSize: "45px",
+          textTransform: "uppercase",
+        }}
+      >
+        Ana's Pizza Delights
+      </h1>
     </header>
   );
 }
 
 function Menu() {
+  const pizzas = pizzaData;
+  //const pizzas = [];
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
       <h2>Our menu</h2>
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            "Ana's Pizza Delights" is a modern pizzeria offering a selection of
+            authentic Italian pizzas, made with fresh and high-quality
+            ingredients.
+          </p>
+
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
+
+      {/*
       <Pizza
         name="Pizza Spinaci"
         ingredients="Tomato, mozarella, spinach, and ricotta cheese"
         photoName="pizzas/spinaci.jpg"
         price={10}
       />
-
       <Pizza
         name="Pizza Funghi"
-        ingredients="Tomato"
+        ingredients="Tomato, mozarella, mushrooms, and onion"
         price={12}
         photoName="pizzas/funghi.jpg"
       />
+      */}
     </main>
   );
 }
 
-function Pizza(props) {
-  console.log(props);
+function Pizza({ pizzaObj }) {
+  console.log(pizzaObj);
+
+  // if (pizzaObj.soldOut) return null;
 
   return (
-    <div className="pizza">
-      <img src={props.photoName} alt={props.name} />
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>{props.name}</h3>
-        <p>{props.ingredients}</p>
-        <span>{props.price + 3}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+
+        {/*pizzaObj.soldOut ? (
+          <span>SOLD OUT</span>
+        ) : (
+          <span>{pizzaObj.price}</span>
+        )*/}
+
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
       </div>
-    </div>
+    </li>
   );
 }
 
@@ -118,20 +152,38 @@ function Footer() {
   //    if(hour >= openHour && hour <= closeHour) alert ("We are currently open")
   //        else alert("Sorry we're closed");
 
+  // if (!isOpen) return ( <p>CLOSED</p>);
+
   return (
     <footer className="footer">
-      {new Date().toLocaleTimeString()}. We are currently open
+      {isOpen ? (
+        <Order closeHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
     </footer>
   );
 }
 
-//React v18
+function Order({ closeHour, openHour }) {
+  return (
+    <div claseName="order">
+      <p>
+        We're open from {openHour}:00 to {closeHour}:00. Come visit us or order
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
+}
+
+//React v18 initialization
+//ReactDOM.render(<App />, document.getElementById("root"));
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
-
-//React before 18
-//ReactDOM.render(<App />, document.getElementById("root"));
